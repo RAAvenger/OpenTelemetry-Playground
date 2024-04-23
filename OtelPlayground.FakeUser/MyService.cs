@@ -15,9 +15,16 @@ public class MyService
         while (true)
         {
             await Task.Delay(TimeSpan.FromSeconds(0.5));
-            var response = await new HttpClient().GetAsync($"http://service-a/WeatherForecast/GetAllWeatherForecasts");
-            var message = await response.Content.ReadAsStringAsync();
-            _logger.GetAll(message);
+            try
+            {
+                var response = await new HttpClient().GetAsync($"http://service-a/WeatherForecast/GetAllWeatherForecasts");
+                var message = await response.Content.ReadAsStringAsync();
+                _logger.GetAll(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.GetAllError(ex);
+            }
         }
     }
 
@@ -27,9 +34,16 @@ public class MyService
         {
             await Task.Delay(TimeSpan.FromSeconds(0.5));
             var city = cities[Random.Shared.Next(0, cities.Length)];
-            var response = await new HttpClient().GetAsync($"http://service-a/WeatherForecast/GetWeatherForecast/{city}");
-            var message = await response.Content.ReadAsStringAsync();
-            _logger.GetCity(city, message);
+            try
+            {
+                var response = await new HttpClient().GetAsync($"http://service-a/WeatherForecast/GetWeatherForecast/{city}");
+                var message = await response.Content.ReadAsStringAsync();
+                _logger.GetCity(city, message);
+            }
+            catch (Exception ex)
+            {
+                _logger.GetCityError(city, ex);
+            }
         }
     }
 }
