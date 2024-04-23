@@ -1,25 +1,11 @@
-﻿{
-    // See https://aka.ms/new-console-template for more information
-    await Task.WhenAll( GetAll());
-    return;
-}
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-static async Task GetAll()
-{
-    while (true)
-    {
-        await Task.Delay(TimeSpan.FromSeconds(0.5));
-        var response = await new HttpClient().GetAsync($"http://service-a/WeatherForecast/GetAllWeatherForecasts");
-        Console.WriteLine(await response.Content.ReadAsStringAsync());
-    }
-}
+// See https://aka.ms/new-console-template for more information
+var host = Host.CreateDefaultBuilder(args)
+.ConfigureServices(services => { services.AddSingleton<MyService>(); })
+.Build();
 
-static async Task GetRandomCity()
-{
-    while (true)
-    {
-        await Task.Delay(TimeSpan.FromSeconds(0.5));
-        var response = await new HttpClient().GetAsync($"http://service-a/WeatherForecast/GetAllWeatherForecasts");
-        Console.WriteLine(await response.Content.ReadAsStringAsync());
-    }
-}
+var myService = host.Services.GetRequiredService<MyService>();
+
+await Task.WhenAll(myService.GetAll(), myService.GetRandomCity());

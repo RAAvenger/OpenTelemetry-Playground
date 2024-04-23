@@ -16,6 +16,20 @@ services:
       - "127.0.0.1:32768:80"
     networks:
       - playground  
+  service-b:
+    build:
+      dockerfile: OtelPlayground.ServiceB/Dockerfile
+      context: .
+    hostname: service-b
+    image: otel-playground-service-b
+    environment:
+      - ServiceName=otel-playground-service-b
+      - ASPNETCORE_HTTP_PORTS=80
+      - ASPNETCORE_URLS=http://*:80   
+    ports:
+      - "127.0.0.1:32770:80"
+    networks:
+      - playground  
  
 #fake user
   fake-user:
@@ -25,19 +39,19 @@ services:
     image: otel-playground-fake-user
     networks:
       - playground
-  spammer:
-    image: alpine/curl:latest
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        sleep 5
-        while true; do
-          curl "http://service-a/WeatherForecast/GetAllWeatherForecasts" || true
-          sleep 1
-        done
-    networks:
-      - playground
+  # spammer:
+  #   image: alpine/curl:latest
+  #   entrypoint:
+  #     - /bin/sh
+  #     - -c
+  #     - |
+  #       sleep 5
+  #       while true; do
+  #         curl "http://service-a/WeatherForecast/GetAllWeatherForecasts" || true
+  #         sleep 1
+  #       done
+  #   networks:
+  #     - playground
 
 #metrics
   prometheus:

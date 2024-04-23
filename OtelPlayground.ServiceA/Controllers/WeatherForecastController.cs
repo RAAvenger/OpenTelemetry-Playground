@@ -43,7 +43,7 @@ namespace OtelPlayground.ServiceA.Controllers
         [HttpGet("GetWeatherForecast/{city}")]
         public async Task<ActionResult<WeatherForecast>> GetWeatherForecast([FromRoute] string city)
         {
-            int dice = Random.Shared.Next(1, 6);
+            int dice = Random.Shared.Next(1, 7);
             if (dice < 3)
             {
                 return Ok(await LowPerformanceAlgorithm(city));
@@ -59,7 +59,7 @@ namespace OtelPlayground.ServiceA.Controllers
 
         private static async Task<WeatherForecast?> HighPerformanceAlgorithm(string city)
         {
-            var response = await new HttpClient().GetAsync($"host.docker.internal:32770/WeatherForecast/GetWeatherForecast/highp?city={city}");
+            var response = await new HttpClient().GetAsync($"service-b/WeatherForecast/GetWeatherForecast/highp?city={city}");
             return await response.Content.ReadFromJsonAsync<WeatherForecast>();
         }
 
@@ -76,13 +76,13 @@ namespace OtelPlayground.ServiceA.Controllers
 
         private static async Task<WeatherForecast?> InvalidAlgorithm(string city)
         {
-            var response = await new HttpClient().GetAsync($"host.docker.internal:32770/WeatherForecast/GetWeatherForecast/highp?city={city}");
+            var response = await new HttpClient().GetAsync($"service-b/WeatherForecast/GetWeatherForecast/highp?city={city}");
             return await response.Content.ReadFromJsonAsync<WeatherForecast>();
         }
 
         private static async Task<WeatherForecast?> LowPerformanceAlgorithm(string city)
         {
-            var response = await new HttpClient().GetAsync($"host.docker.internal:32770/WeatherForecast/GetWeatherForecast/lowp?city={city}");
+            var response = await new HttpClient().GetAsync($"service-b/WeatherForecast/GetWeatherForecast/lowp?city={city}");
             return await response.Content.ReadFromJsonAsync<WeatherForecast>();
         }
 
