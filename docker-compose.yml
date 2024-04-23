@@ -1,6 +1,22 @@
 version: "3.5"
 
 services:
+#our application
+  serviceA:
+    build:
+      dockerfile: OtelPlayground.ServiceA/Dockerfile
+      context: .
+    image: otel-playground-service-a
+    environment:
+      - ServiceName=otel-playground-service-a
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_URLS=http://*:8080   
+    ports:
+      - "127.0.0.1:32768:80"
+    networks:
+      - playground  
+ 
+#fake user
   spammer:
     image: alpine/curl:latest
     entrypoint:
@@ -9,10 +25,11 @@ services:
       - |
         sleep 5
         while true; do
-          curl -s "http://host.docker.internal:32768/WeatherForecast/GetAllWeatherForecasts" || true
+          curl -s "http://serviceA/WeatherForecast/GetAllWeatherForecasts" || true
           sleep 0.25
         done
 
+#metrics
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -36,6 +53,9 @@ services:
     volumes:
       - ./grafana:/etc/grafana/provisioning/datasources
       - grafana_data:/var/lib/grafana
+
+networks:
+  playground:
 
 volumes:
   prom_data:
