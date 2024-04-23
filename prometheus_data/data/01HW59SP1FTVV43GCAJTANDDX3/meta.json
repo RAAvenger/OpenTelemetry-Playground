@@ -1,0 +1,17 @@
+{
+	"ulid": "01HW59SP1FTVV43GCAJTANDDX3",
+	"minTime": 1713859201132,
+	"maxTime": 1713866400000,
+	"stats": {
+		"numSamples": 287471,
+		"numSeries": 741,
+		"numChunks": 2159
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01HW59SP1FTVV43GCAJTANDDX3"
+		]
+	},
+	"version": 1
+}

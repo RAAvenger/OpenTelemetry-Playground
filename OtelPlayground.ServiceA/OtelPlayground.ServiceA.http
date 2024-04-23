@@ -1,0 +1,6 @@
+@OtelPlayground.ServiceA_HostAddress = http://localhost:5055
+
+GET {{OtelPlayground.ServiceA_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

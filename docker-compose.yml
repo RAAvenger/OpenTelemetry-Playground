@@ -1,0 +1,52 @@
+version: "3.5"
+
+services:
+  spammer:
+    image: alpine/curl:latest
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        sleep 5
+        while true; do
+          curl -s "http://host.docker.internal:32768/WeatherForecast/GetAllWeatherForecasts" || true
+          sleep 0.25
+        done
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  prom_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "./prometheus_data"
+  grafana_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "./grafana_data"

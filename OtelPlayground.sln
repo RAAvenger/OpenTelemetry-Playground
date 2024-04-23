@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtelPlayground.ServiceA", "OtelPlayground.ServiceA\OtelPlayground.ServiceA.csproj", "{B9F9B6A6-6793-4CEA-ABA1-C6361D083C87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{28C9E1EA-C358-4A87-B7E2-34BC62DB3736}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtelPlayground.ServiceB", "OtelPlayground.ServiceB\OtelPlayground.ServiceB.csproj", "{E52888C6-175D-45AF-A7C3-0DA57AE37F48}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9F9B6A6-6793-4CEA-ABA1-C6361D083C87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9F9B6A6-6793-4CEA-ABA1-C6361D083C87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9F9B6A6-6793-4CEA-ABA1-C6361D083C87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9F9B6A6-6793-4CEA-ABA1-C6361D083C87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E52888C6-175D-45AF-A7C3-0DA57AE37F48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E52888C6-175D-45AF-A7C3-0DA57AE37F48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E52888C6-175D-45AF-A7C3-0DA57AE37F48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E52888C6-175D-45AF-A7C3-0DA57AE37F48}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49F02534-116F-4139-82DB-7CD2A7B5DB3C}
+	EndGlobalSection
+EndGlobal
