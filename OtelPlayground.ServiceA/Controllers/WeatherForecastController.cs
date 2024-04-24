@@ -59,7 +59,7 @@ namespace OtelPlayground.ServiceA.Controllers
 
         private static async Task<WeatherForecast?> HighPerformanceAlgorithm(string city)
         {
-            var response = await new HttpClient().GetAsync($"service-b/WeatherForecast/GetWeatherForecast/highp?city={city}");
+            var response = await new HttpClient().GetAsync($"http://service-b/WeatherForecast/GetWeatherForecast/highp?city={city}");
             return await response.Content.ReadFromJsonAsync<WeatherForecast>();
         }
 
@@ -76,13 +76,13 @@ namespace OtelPlayground.ServiceA.Controllers
 
         private static async Task<WeatherForecast?> InvalidAlgorithm(string city)
         {
-            var response = await new HttpClient().GetAsync($"service-b/WeatherForecast/GetWeatherForecast/highp?city={city}");
+            var response = await new HttpClient().GetAsync($"http://service-b/WeatherForecast/GetWeatherForecast/highp?city={city}");
             return await response.Content.ReadFromJsonAsync<WeatherForecast>();
         }
 
         private static async Task<WeatherForecast?> LowPerformanceAlgorithm(string city)
         {
-            var response = await new HttpClient().GetAsync($"service-b/WeatherForecast/GetWeatherForecast/lowp?city={city}");
+            var response = await new HttpClient().GetAsync($"http://service-b/WeatherForecast/GetWeatherForecast/lowp?city={city}");
             return await response.Content.ReadFromJsonAsync<WeatherForecast>();
         }
 

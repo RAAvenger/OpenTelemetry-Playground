@@ -1,6 +1,8 @@
+using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,12 @@ builder.Logging.AddOpenTelemetry(options =>
 });
 
 // Add services to the container.
+builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(options =>
+{
+    // Filter out instrumentation of the Prometheus scraping endpoint.
+    options.Filter = ctx => ctx.Request.Path != "/metrics";
+});
+
 builder.Services
     .AddOpenTelemetry()
     .WithMetrics(options => options
@@ -22,7 +30,11 @@ builder.Services
         .AddHttpClientInstrumentation()
         .AddRuntimeInstrumentation()
         .AddProcessInstrumentation()
-        .AddPrometheusExporter());
+        .AddPrometheusExporter())
+    .WithTracing(options => options
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddOtlpExporter());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

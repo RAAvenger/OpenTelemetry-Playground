@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 // See https://aka.ms/new-console-template for more information
 
@@ -11,11 +12,25 @@ var builder = Host.CreateDefaultBuilder(args)
     {
         builder.AddOpenTelemetry(options =>
          {
-             options.SetResourceBuilder(ResourceBuilder.CreateDefault())
-                 .AddConsoleExporter();
+             options.IncludeFormattedMessage = true;
+             options.IncludeScopes = true;
+             options.SetResourceBuilder(ResourceBuilder.CreateDefault()
+                 .AddService("fake user"));
+
+             options.AddOtlpExporter();
          });
-    })
-    .ConfigureServices(services => { services.AddSingleton<MyService>(); });
+    });
+
+// Add services to the container.
+builder.ConfigureServices(services =>
+    {
+        services.AddOpenTelemetry()
+            .WithTracing(options => options
+                .AddHttpClientInstrumentation()
+                .AddOtlpExporter(op=>op.Endpoint=new Uri("http://jeager:5778")));
+
+        services.AddSingleton<MyService>();
+    });
 
 var host = builder.Build();
 

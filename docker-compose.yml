@@ -12,6 +12,9 @@ services:
       - ServiceName=otel-playground-service-a
       - ASPNETCORE_HTTP_PORTS=80
       - ASPNETCORE_URLS=http://*:80
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=5778
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     ports:
       - "127.0.0.1:32768:80"
@@ -28,6 +31,10 @@ services:
       - ServiceName=otel-playground-service-b
       - ASPNETCORE_HTTP_PORTS=80
       - ASPNETCORE_URLS=http://*:80
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     ports:
       - "127.0.0.1:32770:80"
     networks:
@@ -40,21 +47,26 @@ services:
       dockerfile: OtelPlayground.FakeUser/Dockerfile
       context: .
     image: otel-playground-fake-user
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     networks:
       - playground
-  # spammer:
-  #   image: alpine/curl:latest
-  #   entrypoint:
-  #     - /bin/sh
-  #     - -c
-  #     - |
-  #       sleep 5
-  #       while true; do
-  #         curl "http://service-a/WeatherForecast/GetAllWeatherForecasts" || true
-  #         sleep 1
-  #       done
-  #   networks:
-  #     - playground
+  spammer:
+    image: alpine/curl:latest
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        sleep 5
+        while true; do
+          curl "http://service-a/WeatherForecast/GetAllWeatherForecasts" || true
+          sleep 1
+        done
+    networks:
+      - playground
 
   #______________________________________________________________________________________________________
   #metrics
@@ -85,7 +97,6 @@ services:
       - grafana_data:/var/lib/grafana
     networks:
       - playground
-
 
   #______________________________________________________________________________________________________
   #log
@@ -235,6 +246,23 @@ services:
       retries: 120
     networks:
       - playground
+
+  #______________________________________________________________________________________________________
+  #trace
+  jaeger:
+    image: jaegertracing/all-in-one:1.52
+    command: --query.ui-config=/etc/jaeger/jaeger-ui.json --collector.otlp.enabled=true --prometheus.server-url=http://prometheus:9090 --prometheus.query.support-spanmetrics-connector=true
+    environment:
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_QUERY_NORMALIZE_CALLS=true
+      - PROMETHEUS_QUERY_NORMALIZE_DURATION=true
+    volumes:
+      - ./jaeger/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
+    ports:
+      - "16686:16686"
+    networks:
+      - playground
+
 
 #================================================================================================network
 networks:
