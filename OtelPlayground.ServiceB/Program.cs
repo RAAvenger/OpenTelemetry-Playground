@@ -3,16 +3,14 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-var builder = WebApplication.CreateBuilder(args);
-
+var builder = WebApplication.CreateBuilder(args); 
+Console.WriteLine(builder.Configuration["ServiceName"]);
 
 builder.Logging.AddOpenTelemetry(options =>
 {
     options.IncludeFormattedMessage = true;
     options.IncludeScopes = true;
-    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-        .AddService(builder.Configuration["ServiceName"]!));
-
+    
     options.AddOtlpExporter();
 });
 
@@ -20,12 +18,15 @@ builder.Logging.AddOpenTelemetry(options =>
 builder.Services
     .AddOpenTelemetry()
     .WithMetrics(options => options
-        .AddAspNetCoreInstrumentation()
+        .SetResourceBuilder(ResourceBuilder.CreateDefault()
+            .AddService(builder.Configuration["ServiceName"]!)).AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddRuntimeInstrumentation()
         .AddProcessInstrumentation()
         .AddPrometheusExporter())
     .WithTracing(options => options
+        .SetResourceBuilder(ResourceBuilder.CreateDefault()
+            .AddService(builder.Configuration["ServiceName"]!))
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddOtlpExporter());

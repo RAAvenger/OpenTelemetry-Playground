@@ -13,7 +13,7 @@ services:
       - ASPNETCORE_HTTP_PORTS=80
       - ASPNETCORE_URLS=http://*:80
       - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
-      - OTEL_EXPORTER_JAEGER_AGENT_PORT=5778
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
       - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     ports:
@@ -54,19 +54,19 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     networks:
       - playground
-  spammer:
-    image: alpine/curl:latest
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        sleep 5
-        while true; do
-          curl "http://service-a/WeatherForecast/GetAllWeatherForecasts" || true
-          sleep 1
-        done
-    networks:
-      - playground
+  # spammer:
+  #   image: alpine/curl:latest
+  #   entrypoint:
+  #     - /bin/sh
+  #     - -c
+  #     - |
+  #       sleep 5
+  #       while true; do
+  #         curl "http://service-a/WeatherForecast/GetAllWeatherForecasts" || true
+  #         sleep 1
+  #       done
+  #   networks:
+  #     - playground
 
   #______________________________________________________________________________________________________
   #metrics

@@ -5,16 +5,16 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
+Console.WriteLine(builder.Configuration["ServiceName"]);
 
 builder.Logging.AddOpenTelemetry(options =>
 {
     options.IncludeFormattedMessage = true;
     options.IncludeScopes = true;
-    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-        .AddService(builder.Configuration["ServiceName"]!));
 
     options.AddOtlpExporter();
 });
+
 
 // Add services to the container.
 builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(options =>
@@ -26,12 +26,16 @@ builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(options =>
 builder.Services
     .AddOpenTelemetry()
     .WithMetrics(options => options
+        .SetResourceBuilder(ResourceBuilder.CreateDefault()
+            .AddService(builder.Configuration["ServiceName"]!))
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddRuntimeInstrumentation()
         .AddProcessInstrumentation()
         .AddPrometheusExporter())
     .WithTracing(options => options
+        .SetResourceBuilder(ResourceBuilder.CreateDefault()
+            .AddService(builder.Configuration["ServiceName"]!))
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddOtlpExporter());

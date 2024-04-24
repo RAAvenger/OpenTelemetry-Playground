@@ -15,8 +15,7 @@ var builder = Host.CreateDefaultBuilder(args)
              options.IncludeFormattedMessage = true;
              options.IncludeScopes = true;
              options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-                 .AddService("fake user"));
-
+                    .AddService("fake user"))
              options.AddOtlpExporter();
          });
     });
@@ -26,8 +25,10 @@ builder.ConfigureServices(services =>
     {
         services.AddOpenTelemetry()
             .WithTracing(options => options
+                .SetResourceBuilder(ResourceBuilder.CreateDefault()
+                    .AddService("fake user"))
                 .AddHttpClientInstrumentation()
-                .AddOtlpExporter(op=>op.Endpoint=new Uri("http://jeager:5778")));
+                .AddOtlpExporter());
 
         services.AddSingleton<MyService>();
     });
