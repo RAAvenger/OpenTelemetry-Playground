@@ -6,8 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddOpenTelemetry(options =>
 {
-    options.SetResourceBuilder(ResourceBuilder.CreateDefault())
-        .AddConsoleExporter();
+    options.IncludeFormattedMessage = true;
+    options.IncludeScopes = true;
+    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
+        .AddService(builder.Configuration["ServiceName"]!));
+
+    options.AddOtlpExporter();
 });
 
 // Add services to the container.

@@ -362,3 +362,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /prometheus_data/data
 /grafana_data
+/elasticsearch_data
+/kibana_data
