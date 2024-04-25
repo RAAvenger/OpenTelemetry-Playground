@@ -23,18 +23,6 @@ namespace OtelPlayground.ServiceA.Controllers
         [HttpGet("GetAllWeatherForecasts")]
         public ActionResult<IEnumerable<WeatherForecast>> GetAllWeatherForecasts()
         {
-            if (Random.Shared.Next(1, 5) == 1)
-            {
-                try
-                {
-                    throw new Exception("random exception");
-                }
-                catch (Exception ex)
-                {
-                    _logger.CouldNotGenerateWhetherForecast(ex);
-                    return Problem(ex.Message);
-                }
-            }
             var weather = LowPerformanceMethod();
             //var weather = HighPerformanceMethod();
             return base.Ok(weather);
@@ -43,18 +31,26 @@ namespace OtelPlayground.ServiceA.Controllers
         [HttpGet("GetWeatherForecast/{city}")]
         public async Task<ActionResult<WeatherForecast>> GetWeatherForecast([FromRoute] string city)
         {
-            int dice = Random.Shared.Next(1, 7);
-            if (dice < 3)
+            try
             {
-                return Ok(await LowPerformanceAlgorithm(city));
-            }
+                var dice = Random.Shared.Next(1, 7);
+                if (dice < 3)
+                {
+                    return Ok(await LowPerformanceAlgorithm(city));
+                }
 
-            if (dice < 6)
+                if (dice < 5)
+                {
+                    return Ok(await HighPerformanceAlgorithm(city));
+                }
+
+                return Ok(await InvalidAlgorithm(city));
+            }
+            catch (Exception ex)
             {
-                return Ok(await HighPerformanceAlgorithm(city));
+                _logger.GetDataFromServerB(ex);
+                throw;
             }
-
-            return Ok(await InvalidAlgorithm(city));
         }
 
         private static async Task<WeatherForecast?> HighPerformanceAlgorithm(string city)
@@ -76,7 +72,8 @@ namespace OtelPlayground.ServiceA.Controllers
 
         private static async Task<WeatherForecast?> InvalidAlgorithm(string city)
         {
-            var response = await new HttpClient().GetAsync($"http://service-b/WeatherForecast/GetWeatherForecast/highp?city={city}");
+            var response = await new HttpClient().GetAsync($"http://service-b/WeatherForecast/GetWeatherForecast/some-random-algorithm?city={city}");
+            response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<WeatherForecast>();
         }
 

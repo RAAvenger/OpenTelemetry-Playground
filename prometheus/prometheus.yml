@@ -31,9 +31,9 @@ scrape_configs:
   - job_name: 'OtelPlayground.ServiceA'
     scrape_interval: 5s # Poll every 5 seconds for a more responsive demo.
     static_configs:
-      - targets: ["host.docker.internal:32768"]  ## Enter the HTTP port number of the demo app.
+      - targets: ["service-a"]  ## Enter the HTTP port number of the demo app.
 
   - job_name: 'OtelPlayground.ServiceB'
     scrape_interval: 5s # Poll every 5 seconds for a more responsive demo.
     static_configs:
-      - targets: ["host.docker.internal:32770"]  ## Enter the HTTP port number of the demo app.
+      - targets: ["service-b"]  ## Enter the HTTP port number of the demo app.
