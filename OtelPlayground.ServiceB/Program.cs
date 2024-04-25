@@ -2,6 +2,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using OtelPlayground.ServiceB.Commons;
 
 var builder = WebApplication.CreateBuilder(args); 
 Console.WriteLine(builder.Configuration["ServiceName"]);
@@ -27,6 +28,7 @@ builder.Services
             .AddService(builder.Configuration["ServiceName"]!))
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
+        .AddSource(AppActivitySource.AppActivityName)
         .AddOtlpExporter());
 
 builder.Services.AddControllers();
