@@ -32,7 +32,7 @@ public class MyService
     {
         while (true)
         {
-            await Task.Delay(TimeSpan.FromSeconds(0.5));
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
             var city = cities[Random.Shared.Next(0, cities.Length)];
             try
             {

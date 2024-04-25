@@ -15,7 +15,7 @@ var builder = Host.CreateDefaultBuilder(args)
              options.IncludeFormattedMessage = true;
              options.IncludeScopes = true;
              options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-                    .AddService("fake user"))
+                    .AddService("fake user"));
              options.AddOtlpExporter();
          });
     });

@@ -11,6 +11,8 @@ builder.Logging.AddOpenTelemetry(options =>
 {
     options.IncludeFormattedMessage = true;
     options.IncludeScopes = true;
+    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
+        .AddService(builder.Configuration["ServiceName"]!));
 
     options.AddOtlpExporter();
 });
@@ -26,8 +28,6 @@ builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(options =>
 builder.Services
     .AddOpenTelemetry()
     .WithMetrics(options => options
-        .SetResourceBuilder(ResourceBuilder.CreateDefault()
-            .AddService(builder.Configuration["ServiceName"]!))
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddRuntimeInstrumentation()
