@@ -1,13 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
+using OtelPlayground.FakeUser.Utilities.Abstraction;
 
-public class MyService
+internal class MyService
 {
     private static readonly string[] cities = ["zahedan", "birjand", "hamedan", "zanjan"];
+    private readonly IActivitySourceWrapper _activitySource;
     private readonly ILogger<MyService> _logger;
 
-    public MyService(ILogger<MyService> logger)
+    public MyService(ILogger<MyService> logger, IActivitySourceWrapper activitySource)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _activitySource = activitySource ?? throw new ArgumentNullException(nameof(activitySource));
     }
 
     public async Task GetAll()
@@ -18,6 +21,7 @@ public class MyService
             try
             {
                 var response = await new HttpClient().GetAsync($"http://service-a/WeatherForecast/GetAllWeatherForecasts");
+                response.EnsureSuccessStatusCode();
                 var message = await response.Content.ReadAsStringAsync();
                 _logger.GetAll(message);
             }
@@ -37,6 +41,7 @@ public class MyService
             try
             {
                 var response = await new HttpClient().GetAsync($"http://service-a/WeatherForecast/GetWeatherForecast/{city}");
+                response.EnsureSuccessStatusCode();
                 var message = await response.Content.ReadAsStringAsync();
                 _logger.GetCity(city, message);
             }
