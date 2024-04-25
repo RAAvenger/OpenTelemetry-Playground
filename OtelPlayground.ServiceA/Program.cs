@@ -13,28 +13,20 @@ builder.Logging.AddOpenTelemetry(options =>
     options.IncludeScopes = true;
     options.SetResourceBuilder(ResourceBuilder.CreateDefault()
         .AddService(builder.Configuration["ServiceName"]!));
-
     options.AddOtlpExporter();
 });
 
 
 // Add services to the container.
-builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(options =>
-{
-    // Filter out instrumentation of the Prometheus scraping endpoint.
-    options.Filter = ctx => ctx.Request.Path != "/metrics";
-});
 
 builder.Services
     .AddOpenTelemetry()
-    .WithMetrics(options => options
-        .AddAspNetCoreInstrumentation()
+    .WithMetrics(options => options.AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddRuntimeInstrumentation()
         .AddProcessInstrumentation()
         .AddPrometheusExporter())
-    .WithTracing(options => options
-        .SetResourceBuilder(ResourceBuilder.CreateDefault()
+    .WithTracing(options => options.SetResourceBuilder(ResourceBuilder.CreateDefault()
             .AddService(builder.Configuration["ServiceName"]!))
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
