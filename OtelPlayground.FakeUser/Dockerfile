@@ -9,7 +9,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["OtelPlayground.FakeUser/OtelPlayground.FakeUser.csproj", "OtelPlayground.FakeUser/"]
 RUN dotnet restore "./OtelPlayground.FakeUser/OtelPlayground.FakeUser.csproj"
-COPY . .
+COPY ["./OtelPlayground.FakeUser", "OtelPlayground.FakeUser"]
 WORKDIR "/src/OtelPlayground.FakeUser"
 RUN dotnet build "./OtelPlayground.FakeUser.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
